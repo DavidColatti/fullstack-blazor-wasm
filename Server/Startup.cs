@@ -6,6 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore;
+using fullstackblazorwasm.Server.Models;
 
 namespace fullstack_blazor_wasm.Server
 {
@@ -25,6 +28,16 @@ namespace fullstack_blazor_wasm.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddDbContext<UserContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSwaggerGen(opt => opt.SwaggerDoc("v1",
+                new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Version = "v1",
+                    Title= "Fullstack Api"
+                }
+                ));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +58,8 @@ namespace fullstack_blazor_wasm.Server
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-
+            app.UseSwagger();
+            app.UseSwaggerUI(opt => opt.SwaggerEndpoint("/swagger/v1/swagger.json", "Fullstack Api"));
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

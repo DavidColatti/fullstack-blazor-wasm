@@ -41,5 +41,25 @@ namespace fullstackblazorwasm.Server.Controllers
             _userContext.SaveChanges();
             return user;
         }
+
+        // PUT api/user/5
+        [HttpPut("{id}")]
+        public ActionResult<User> PutUser(int id, User user)
+        {
+            User newUser = _userContext.Users.FirstOrDefault(user => user.Id == id);
+            newUser.Name = user.Name;
+            newUser.Email = user.Email;
+            newUser.Password = user.Password;
+            _userContext.SaveChanges();
+            return newUser;
+        }
+
+        // DELETE api/user/5
+        [HttpDelete("{id}")]
+        public void DeleteUserById(int id)
+        {
+            User oldUser = _userContext.Users.FirstOrDefault(user => user.Id == id);
+            _userContext.Users.Remove(oldUser);
+        }
     }
 }
